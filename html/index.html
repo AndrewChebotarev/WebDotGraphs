@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JsonViewer WEB</title>
+    <script src = "https://d3js.org/d3.v7.min.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+
+    <h1>Интерактивный график</h1>   
+
+    <div>
+        <input type="file" id="fileInput" accept=".json">
+        <button id="reset">Сброс</button>
+        <button id="toggleDarkMode">Кнопка смены темы</button>
+    </div>
+
+    <div>
+        <svg width="1200" height="600"></svg>
+    </div>
+
+    <script src="../js/script.js"></script>
+    
+</body>
+</html>

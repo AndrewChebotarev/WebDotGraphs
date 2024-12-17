@@ -1,0 +1,100 @@
+document.body.classList.add("dark-mode");
+
+const svg = d3.select("svg");
+const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+const width = +svg.attr("width") - margin.left - margin.right;
+const height = +svg.attr("height") - margin.top - margin.bottom;
+
+const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+let data = []; // Изначально данные пустые
+
+function render() {
+    const xMin = d3.min(data, d => d.x);
+    const xMax = d3.max(data, d => d.x) + 10;
+    const yMin = d3.min(data, d => d.y);
+    const yMax = d3.max(data, d => d.y) + 10;
+
+    const xScale = d3.scaleLinear().domain([xMin, xMax]).range([0, width]);
+    const yScale = d3.scaleLinear().domain([yMin, yMax]).range([height, 0]);
+
+    g.selectAll(".point")
+        .data(data)
+        .join("circle")
+        .attr("class", "point")
+        .attr("cx", d => xScale(d.x))
+        .attr("cy", d => yScale(d.y))
+        .attr("r", 5)
+        .attr("fill", (d, i) => document.body.classList.contains("dark-mode") ? "#ccc" : "steelblue");
+
+    g.selectAll(".x-axis").remove();
+    g.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(xScale));
+
+    g.selectAll(".y-axis").remove();
+    g.append("g")
+        .attr("class", "y-axis")
+        .call(d3.axisLeft(yScale));
+
+    g.selectAll(".grid").remove();
+    g.append("g")
+        .attr("class", "grid")
+        .selectAll("line")
+        .data(yScale.ticks(10))
+        .enter()
+        .append("line")
+        .attr("x1", 0)
+        .attr("x2", width)
+        .attr("y1", d => yScale(d))
+        .attr("y2", d => yScale(d))
+        .attr("stroke", document.body.classList.contains("dark-mode") ? "#888" : "#666")
+        .attr("stroke-width", 2)
+        .attr("stroke-dasharray", "2,2");
+
+    g.append("g")
+        .attr("class", "grid")
+        .selectAll("line")
+        .data(xScale.ticks(10))
+        .enter()
+        .append("line")
+        .attr("x1", d => xScale(d))
+        .attr("x2", d => xScale(d))
+        .attr("y1", 0)
+        .attr("y2", height)
+        .attr("stroke", document.body.classList.contains("dark-mode") ? "#888" : "#666")
+        .attr("stroke-width", 2)
+        .attr("stroke-dasharray", "2,2");
+}
+
+// Загрузка данных из выбранного файла JSON
+document.getElementById("fileInput").addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const jsonData = JSON.parse(e.target.result);
+            // Преобразуем данные в нужный формат
+            data = jsonData.map(d => ({ x: d.X, y: d.Y }));
+            render(); // Перерисовываем график с новыми данными
+        };
+        reader.readAsText(file);
+    }
+});
+
+d3.select("#reset").on("click", () => {
+    data.forEach((d, i) => {
+        d.x = (i + 1) * 50;
+        d.y = (i + 1) * 20;
+    });
+    render();
+});
+
+d3.select("#toggleDarkMode").on("click", () => {
+    document.body.classList.toggle("dark-mode");
+    svg.style("background-color", document.body.classList.contains("dark-mode") ? "#444" : "#fff");
+    render();
+});
+
+render(); // Изначально вызываем render с пустыми данными

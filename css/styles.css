@@ -55,3 +55,31 @@ button:hover {
 .dark-mode button:hover {
     background-color: #666; /* Цвет фона кнопки при наведении в темной теме */
 }
+
+.custom-file-upload {
+    background-color: #4CAF50; /* Цвет фона кнопки */
+    border: none; /* Убрать границу */
+    color: white; /* Цвет текста кнопки */
+    padding: 10px 26px; /* Внутренние отступы */
+    text-align: center; /* Центрирование текста */
+    text-decoration: none; /* Убрать подчеркивание */
+    display: inline-block; /* Включить блочный режим */
+    font-size: 16px; /* Размер шрифта */
+    margin: 4px 2px; /* Отступы между кнопками */
+    cursor: pointer; /* Курсор при наведении */
+    border-radius: 5px; /* Закругление углов */
+    transition: background-color 0.3s; /* Плавный переход цвета фона */
+}
+
+.custom-file-upload:hover {
+    background-color: #45a049; /* Цвет фона при наведении */
+}
+
+.dark-mode .custom-file-upload {
+    background-color: #555; /* Цвет фона кнопки в темной теме */
+    color: #f0f0f0; /* Цвет текста кнопки в темной теме */
+}
+
+.dark-mode .custom-file-upload:hover {
+    background-color: #666; /* Цвет фона кнопки при наведении в темной теме */
+}

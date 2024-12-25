@@ -7,13 +7,41 @@ const height = +svg.attr("height") - margin.top - margin.bottom;
 
 const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
-let data = []; // Изначально данные пустые
-let initialData = []; // Переменная для сохранения начальных данных
-let xScale, yScale; // Объявляем xScale и yScale глобально
+let data = [];
+let initialData = [];
+let xScale, yScale;
 
-function render() {
-    if (data.length === 0) return; // Если данных нет, ничего не рендерим
+const colors = 
+{
+    light: "steelblue",
+    dark: "#ccc",
 
+    grid: 
+    {
+        light: "#666",
+        dark: "#888"
+    },
+
+    background: 
+    {
+        light: "#fff",
+        dark: "#444"
+    }
+};
+
+function render() 
+{
+    if (data.length === 0) 
+        return;
+
+    updateScales();
+    drawPoints();
+    drawAxes();
+    drawGrid();
+}
+
+function updateScales() 
+{
     const xMin = d3.min(data, d => d.x);
     const xMax = d3.max(data, d => d.x) + 10;
     const yMin = d3.min(data, d => d.y);
@@ -21,7 +49,10 @@ function render() {
 
     xScale = d3.scaleLinear().domain([xMin, xMax]).range([0, width]);
     yScale = d3.scaleLinear().domain([yMin, yMax]).range([height, 0]);
+}
 
+function drawPoints() 
+{
     g.selectAll(".point")
         .data(data)
         .join("circle")
@@ -29,8 +60,11 @@ function render() {
         .attr("cx", d => xScale(d.x))
         .attr("cy", d => yScale(d.y))
         .attr("r", 5)
-        .attr("fill", (d, i) => document.body.classList.contains("dark-mode") ? "#ccc" : "steelblue");
+        .attr("fill", document.body.classList.contains("dark-mode") ? colors.dark : colors.light);
+}
 
+function drawAxes() 
+{
     g.selectAll(".x-axis").remove();
     g.append("g")
         .attr("class", "x-axis")
@@ -41,86 +75,100 @@ function render() {
     g.append("g")
         .attr("class", "y-axis")
         .call(d3.axisLeft(yScale));
+}
 
+function drawGrid() 
+{
     g.selectAll(".grid").remove();
-    g.append("g")
-        .attr("class", "grid")
-        .selectAll("line")
+
+    const gridLines = g.append("g").attr("class", "grid");
+
+    gridLines.selectAll("line.y")
         .data(yScale.ticks(10))
         .enter()
         .append("line")
+        .attr("class", "y")
         .attr("x1", 0)
         .attr("x2", width)
         .attr("y1", d => yScale(d))
         .attr("y2", d => yScale(d))
-        .attr("stroke", document.body.classList.contains("dark-mode") ? "#888" : "#666")
+        .attr("stroke", document.body.classList.contains("dark-mode") ? colors.grid.dark : colors.grid.light)
         .attr("stroke-width", 2)
         .attr("stroke-dasharray", "2,2");
 
-    g.append("g")
-        .attr("class", "grid")
-        .selectAll("line")
+    gridLines.selectAll("line.x")
         .data(xScale.ticks(10))
         .enter()
         .append("line")
+        .attr("class", "x")
         .attr("x1", d => xScale(d))
         .attr("x2", d => xScale(d))
         .attr("y1", 0)
         .attr("y2", height)
-        .attr("stroke", document.body.classList.contains("dark-mode") ? "#888" : "#666")
+        .attr("stroke", document.body.classList.contains("dark-mode") ? colors.grid.dark : colors.grid.light)
         .attr("stroke-width", 2)
         .attr("stroke-dasharray", "2,2");
 }
 
-// Загрузка данных из выбранного файла JSON
-document.getElementById("fileInput").addEventListener("change", (event) => {
+document.getElementById("fileInput").addEventListener("change", (event) => 
+{
     const file = event.target.files[0];
-    if (file) {
+    
+    if (file) 
+    {
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = (e) => 
+        {
             const jsonData = JSON.parse(e.target.result);
-            // Преобразуем данные в нужный формат
             data = jsonData.map(d => ({ x: d.X, y: d.Y }));
-            initialData = [...data]; // Сохраняем начальные данные
-            render(); // Перерисовываем график с новыми данными
+            initialData = [...data];
+
+            render();
         };
+
         reader.readAsText(file);
     }
 });
 
-function resetZoom() {
-    svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity); // Сброс зума
+function resetZoom() 
+{
+    svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
 }
 
-d3.select("#reset").on("click", () => {
-    if (initialData.length > 0) {
-        data = [...initialData]; // Восстанавливаем данные из начальных
-        render(); // Перерисовываем график
-        resetZoom(); // Сброс зума
+d3.select("#reset").on("click", () => 
+{
+    if (initialData.length > 0) 
+    {
+        data = [...initialData];
+
+        render();
+        resetZoom();
     }
 });
 
-d3.select("#toggleDarkMode").on("click", () => {
+d3.select("#toggleDarkMode").on("click", () => 
+{
     document.body.classList.toggle("dark-mode");
-    svg.style("background-color", document.body.classList.contains("dark-mode") ? "#444" : "#fff");
+    svg.style("background-color", document.body.classList.contains("dark-mode") ? colors.background.dark : colors.background.light);
+
     render();
 });
 
 const zoom = d3.zoom()
-    .scaleExtent([0.0001, 50]) // Ограничиваем масштаб от 0.5 до 5
-    .on("zoom", (event) => {
-        // Обновляем масштабы
+    .scaleExtent([0.0001, 50])
+    .on("zoom", (event) => 
+    {
         const newXScale = event.transform.rescaleX(xScale);
         const newYScale = event.transform.rescaleY(yScale);
 
         g.selectAll(".point")
             .attr("cx", d => newXScale(d.x))
-            .attr("cy", d => newYScale(d.y)); // Обновляем положение точек
+            .attr("cy", d => newYScale(d.y));
 
-        g.select(".x-axis").call(d3.axisBottom(newXScale)); // Обновляем ось X
-        g.select(".y-axis").call(d3.axisLeft(newYScale)); // Обновляем ось Y
+        g.select(".x-axis").call(d3.axisBottom(newXScale));
+        g.select(".y-axis").call(d3.axisLeft(newYScale));
     });
 
-svg.call(zoom); // Применяем зум к svg
+svg.call(zoom);
 
-render(); // Изначально вызываем render с пустыми данными
+render();

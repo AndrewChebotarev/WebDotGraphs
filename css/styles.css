@@ -1,85 +1,65 @@
+:root {
+    --main-bg-color: #4CAF50;
+    --dark-bg-color: #333;
+    --dark-bg-hover: #666;
+    --light-bg-color: #ccc;
+    --dark-text-color: #f0f0f0;
+    --dark-svg-bg: #444;
+}
+
 body {
     font-family: Arial, sans-serif;
     display: grid;
-    place-items: center; /* Центрирование по горизонтали и вертикали */
+    place-items: center;
     flex-direction: column;
-    height: 25vh; /* Занять всю высоту окна */
+    height: 25vh;
 }
 
 svg {
-    border: 1px solid #ccc;
+    border: 1px solid var(--light-bg-color);
+}
+
+.h1 {
+    margin-top: 10px;
 }
 
 .point {
     cursor: pointer;
 }
 
+.button, .custom-file-upload {
+    background-color: var(--main-bg-color);
+    border: none;
+    color: white;
+    padding: 10px 26px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.button:hover, .custom-file-upload:hover {
+    background-color: #45a049;
+}
+
 .dark-mode {
-    background-color: #333;
+    background-color: var(--dark-bg-color);
     color: white;
 }
 
 .dark-mode svg {
-    background-color: #444;
+    background-color: var(--dark-svg-bg);
 }
 
-.h1
-{
-    margin-top: 10px; /* Отступ сверху для кнопок */
+.dark-mode .button, .dark-mode .custom-file-upload {
+    background-color: #555;
+    color: var(--dark-text-color);
 }
 
-button {
-    background-color: #4CAF50; /* Цвет фона кнопки */
-    border: none; /* Убрать границу */
-    color: white; /* Цвет текста кнопки */
-    padding: 10px 26px; /* Внутренние отступы */
-    text-align: center; /* Центрирование текста */
-    text-decoration: none; /* Убрать подчеркивание */
-    display: inline-block; /* Включить блочный режим */
-    font-size: 16px; /* Размер шрифта */
-    margin: 4px 2px; /* Отступы между кнопками */
-    cursor: pointer; /* Курсор при наведении */
-    border-radius: 5px; /* Закругление углов */
-    transition: background-color 0.3s; /* Плавный переход цвета фона */
-}
-
-button:hover {
-    background-color: #45a049; /* Цвет фона при наведении */
-}
-
-.dark-mode button {
-    background-color: #555; /* Цвет фона кнопки в темной теме */
-    color: #f0f0f0; /* Цвет текста кнопки в темной теме */
-}
-
-.dark-mode button:hover {
-    background-color: #666; /* Цвет фона кнопки при наведении в темной теме */
-}
-
-.custom-file-upload {
-    background-color: #4CAF50; /* Цвет фона кнопки */
-    border: none; /* Убрать границу */
-    color: white; /* Цвет текста кнопки */
-    padding: 10px 26px; /* Внутренние отступы */
-    text-align: center; /* Центрирование текста */
-    text-decoration: none; /* Убрать подчеркивание */
-    display: inline-block; /* Включить блочный режим */
-    font-size: 16px; /* Размер шрифта */
-    margin: 4px 2px; /* Отступы между кнопками */
-    cursor: pointer; /* Курсор при наведении */
-    border-radius: 5px; /* Закругление углов */
-    transition: background-color 0.3s; /* Плавный переход цвета фона */
-}
-
-.custom-file-upload:hover {
-    background-color: #45a049; /* Цвет фона при наведении */
-}
-
-.dark-mode .custom-file-upload {
-    background-color: #555; /* Цвет фона кнопки в темной теме */
-    color: #f0f0f0; /* Цвет текста кнопки в темной теме */
-}
-
-.dark-mode .custom-file-upload:hover {
-    background-color: #666; /* Цвет фона кнопки при наведении в темной теме */
+.dark-mode .button:hover, .dark-mode .custom-file-upload:hover {
+    background-color: var(--dark-bg-hover);
 }

@@ -63,3 +63,27 @@ svg {
 .dark-mode .button:hover, .dark-mode .custom-file-upload:hover {
     background-color: var(--dark-bg-hover);
 }
+
+.axis {
+    cursor: grab; /* Курсор для наведения на ось */
+}
+
+.axis.dragging {
+    cursor: grabbing; /* Курсор для зажатия */
+}
+
+#tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    pointer-events: none;
+    display: none;
+    color: #000; /* Цвет текста по умолчанию */
+}
+
+.dark-mode #tooltip {
+    background: rgba(255, 255, 255, 0.8); /* Темный фон для tooltip */
+    color: #000; /* Белый текст для темного фона */
+}

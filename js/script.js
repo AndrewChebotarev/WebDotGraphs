@@ -11,23 +11,31 @@ let data = [];
 let initialData = [];
 let xScale, yScale;
 
-const colors = {
+let isDraggingY = false;
+let currentZoomTransform = d3.zoomIdentity;
+
+const colors = 
+{
     light: "steelblue",
     dark: "#ccc",
-    grid: {
+
+    grid: 
+    {
         light: "#666",
         dark: "#888"
     },
-    background: {
+
+    background: 
+    {
         light: "#fff",
         dark: "#444"
     }
 };
 
-let isDraggingY = false; // Флаг для отслеживания перетаскивания по Y
-
-function render() {
-    if (data.length === 0) return;
+function render() 
+{
+    if (data.length === 0) 
+        return;
 
     updateScales();
     drawPoints();
@@ -35,7 +43,8 @@ function render() {
     drawGrid();
 }
 
-function updateScales() {
+function updateScales() 
+{
     const xMin = d3.min(data, d => d.x);
     const xMax = d3.max(data, d => d.x) + 10;
     const yMin = d3.min(data, d => d.y);
@@ -45,35 +54,38 @@ function updateScales() {
     yScale = d3.scaleLinear().domain([yMin, yMax]).range([height, 0]);
 }
 
-let currentZoomTransform = d3.zoomIdentity;
-
-function drawPoints() {
+function drawPoints() 
+{
     g.selectAll(".point")
         .data(data)
         .join("circle")
         .attr("class", "point")
-        .attr("cx", d => currentZoomTransform.applyX(xScale(d.x))) // Применяем текущее масштабирование к X
+        .attr("cx", d => currentZoomTransform.applyX(xScale(d.x)))
         .attr("cy", d => yScale(d.y))
         .attr("r", 5)
         .attr("fill", document.body.classList.contains("dark-mode") ? colors.dark : colors.light)
-        .on("mouseover", (event, d) => {
+        .on("mouseover", (event, d) => 
+        {
             const tooltip = d3.select("#tooltip");
             tooltip.style("display", "block")
-                .html(`X: ${d.x}, Y: ${d.y}`) // Отображаем координаты
-                .style("left", (event.pageX + 5) + "px") // Устанавливаем позицию по X
-                .style("top", (event.pageY - 28) + "px"); // Устанавливаем позицию по Y
+                .html(`X: ${d.x}, Y: ${d.y}`)
+                .style("left", (event.pageX + 5) + "px")
+                .style("top", (event.pageY - 28) + "px");
         })
-        .on("mousemove", (event) => {
+        .on("mousemove", (event) => 
+        {
             const tooltip = d3.select("#tooltip");
             tooltip.style("left", (event.pageX + 5) + "px")
                 .style("top", (event.pageY - 28) + "px");
         })
-        .on("mouseout", () => {
-            d3.select("#tooltip").style("display", "none"); // Скрываем tooltip
+        .on("mouseout", () => 
+        {
+            d3.select("#tooltip").style("display", "none");
         });
 }
 
-function drawAxes() {
+function drawAxes() 
+{
     g.selectAll(".x-axis").remove();
     const xAxis = g.append("g")
         .attr("class", "x-axis")
@@ -85,12 +97,15 @@ function drawAxes() {
         .attr("class", "y-axis")
         .call(d3.axisLeft(yScale))
         .call(d3.drag()
-            .on("start", () => {
-                d3.select(".y-axis").classed("grabbing", true); // Добавляем класс при начале перетаскивания
+            .on("start", () => 
+            {
+                d3.select(".y-axis").classed("grabbing", true);
             })
-            .on("drag", (event) => {
-                const dy = event.dy; // Получаем смещение по Y
-                const newDomain = [
+            .on("drag", (event) => 
+            {
+                const dy = event.dy;
+                const newDomain = 
+                [
                     yScale.domain()[0] + (dy / height) * (yScale.domain()[1] - yScale.domain()[0]),
                     yScale.domain()[1] + (dy / height) * (yScale.domain()[1] - yScale.domain()[0])
                 ];
@@ -100,26 +115,33 @@ function drawAxes() {
                 drawAxes();
                 drawGrid();
             })
-            .on("end", () => {
-                d3.select(".y-axis").classed("grabbing", false); // Убираем класс при завершении перетаскивания
+            .on("end", () => 
+            {
+                d3.select(".y-axis").classed("grabbing", false);
             })
         );
 
-    // Добавляем обработчик для изменения курсора при наведении
-    xAxis.on("mouseover", () => {
+    xAxis.on("mouseover", () => 
+    {
         xAxis.style("cursor", "grab");
-    }).on("mouseout", () => {
+    })
+    .on("mouseout", () => 
+    {
         xAxis.style("cursor", "default");
     });
 
-    yAxis.on("mouseover", () => {
+    yAxis.on("mouseover", () => 
+    {
         yAxis.style("cursor", "grab");
-    }).on("mouseout", () => {
+    })
+    .on("mouseout", () => 
+    {
         yAxis.style("cursor", "default");
     });
 }
 
-function drawGrid() {
+function drawGrid() 
+{
     g.selectAll(".grid").remove();
 
     const gridLines = g.append("g").attr("class", "grid");
@@ -151,16 +173,19 @@ function drawGrid() {
         .attr("stroke-dasharray", "2,2");
 }
 
-document.getElementById("fileInput").addEventListener("change", (event) => {
+document.getElementById("fileInput").addEventListener("change", (event) => 
+{
     const file = event.target.files[0];
     
-    if (file) {
+    if (file) 
+    {
         const reader = new FileReader();
-        reader.onload = (e) => {
+
+        reader.onload = (e) => 
+        {
             const jsonData = JSON.parse(e.target.result);
             data = jsonData.map(d => ({ x: d.X, y: d.Y }));
             initialData = [...data];
-
             render();
         };
 
@@ -168,12 +193,15 @@ document.getElementById("fileInput").addEventListener("change", (event) => {
     }
 });
 
-function resetZoom() {
+function resetZoom() 
+{
     svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
 }
 
-d3.select("#reset").on("click", () => {
-    if (initialData.length > 0) {
+d3.select("#reset").on("click", () => 
+{
+    if (initialData.length > 0) 
+    {
         data = [...initialData];
 
         render();
@@ -181,22 +209,22 @@ d3.select("#reset").on("click", () => {
     }
 });
 
-d3.select("#toggleDarkMode").on("click", () => {
+d3.select("#toggleDarkMode").on("click", () => 
+{
     document.body.classList.toggle("dark-mode");
     svg.style("background-color", document.body.classList.contains("dark-mode") ? colors.background.dark : colors.background.light);
-
     render();
 });
 
 const zoom = d3.zoom()
     .scaleExtent([0.0001, 50])
-    .on("zoom", (event) => {
-        currentZoomTransform = event.transform; // Сохраняем текущее состояние масштабирования
+    .on("zoom", (event) => 
+    {
+        currentZoomTransform = event.transform;
         const newXScale = currentZoomTransform.rescaleX(xScale);
-        g.selectAll(".point").attr("cx", d => newXScale(d.x)); // Обновляем координаты X
-        g.select(".x-axis").call(d3.axisBottom(newXScale)); // Обновляем ось X
+        g.selectAll(".point").attr("cx", d => newXScale(d.x));
+        g.select(".x-axis").call(d3.axisBottom(newXScale));
     });
 
 svg.call(zoom);
-
 render();

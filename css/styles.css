@@ -65,11 +65,11 @@ svg {
 }
 
 .axis {
-    cursor: grab; /* Курсор для наведения на ось */
+    cursor: grab;
 }
 
 .axis.dragging {
-    cursor: grabbing; /* Курсор для зажатия */
+    cursor: grabbing;
 }
 
 #tooltip {
@@ -80,10 +80,10 @@ svg {
     border-radius: 4px;
     pointer-events: none;
     display: none;
-    color: #000; /* Цвет текста по умолчанию */
+    color: #000;
 }
 
 .dark-mode #tooltip {
-    background: rgba(255, 255, 255, 0.8); /* Темный фон для tooltip */
-    color: #000; /* Белый текст для темного фона */
+    background: rgba(255, 255, 255, 0.8);
+    color: #000;
 }

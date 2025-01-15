@@ -13,6 +13,7 @@ let xScale, yScale;
 
 let isDraggingY = false;
 let currentZoomTransform = d3.zoomIdentity;
+let originalXDomain, originalYDomain;
 
 const colors = 
 {
@@ -32,7 +33,7 @@ const colors =
     }
 };
 
-function render() 
+function render(test = false) 
 {
     if (data.length === 0) 
         return;
@@ -42,6 +43,10 @@ function render()
     drawAxes();
     drawGrid();
 }
+
+let index = 0;
+let testx;
+let testy;
 
 function updateScales() 
 {
@@ -86,13 +91,23 @@ function drawPoints()
 
 function drawAxes() 
 {
+
     g.selectAll(".x-axis").remove();
+    g.selectAll(".y-axis").remove();
+
+
+    // Создаем ось X
     const xAxis = g.append("g")
         .attr("class", "x-axis")
         .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(currentZoomTransform.rescaleX(xScale)));
+        .call(d3.axisBottom(currentZoomTransform.rescaleX(xScale)))
+        .on("dblclick", (event) => {
+            //event.preventDefault(); // Предотвращаем стандартное поведение
+            //event.stopPropagation(); // Останавливаем распространение события // Предотвращаем стандартное поведение двойного клика
+            resetXScale(); // Сбрасываем масштаб по оси X
+        });
 
-    g.selectAll(".y-axis").remove();
+    // Создаем ось Y
     const yAxis = g.append("g")
         .attr("class", "y-axis")
         .call(d3.axisLeft(yScale))
@@ -119,8 +134,13 @@ function drawAxes()
             {
                 d3.select(".y-axis").classed("grabbing", false);
             })
-        );
+        )
+        .on("dblclick", (event) => {
+            //event.preventDefault(); // Предотвращаем стандартное поведение двойного клика
+            resetYScale(); // Сбрасываем масштаб по оси Y
+        });
 
+    // Установка курсора для осей
     xAxis.on("mouseover", () => 
     {
         xAxis.style("cursor", "grab");
@@ -138,6 +158,25 @@ function drawAxes()
     {
         yAxis.style("cursor", "default");
     });
+}
+
+function resetXScale() {
+
+    let x = originalXDomain[0] - originalXDomain[1];
+    let y = originalYDomain[0];
+
+    const customTransform = d3.zoomIdentity.translate(x, y);
+
+    console.log(customTransform);
+
+    svg.transition().duration(750).call(zoom.transform, customTransform);
+    render(false);
+}
+
+function resetYScale() {
+    yScale.domain(originalYDomain);
+    console.log("y");
+    render();
 }
 
 function drawGrid() 
@@ -186,6 +225,13 @@ document.getElementById("fileInput").addEventListener("change", (event) =>
             const jsonData = JSON.parse(e.target.result);
             data = jsonData.map(d => ({ x: d.X, y: d.Y }));
             initialData = [...data];
+
+            // Сохраняем оригинальные домены
+            originalXDomain = [d3.min(data, d => d.x), d3.max(data, d => d.x) + 10];
+            originalYDomain = [d3.min(data, d => d.y), d3.max(data, d => d.y) + 10];
+            
+            testx = data;
+
             render();
         };
 
@@ -227,4 +273,6 @@ const zoom = d3.zoom()
     });
 
 svg.call(zoom);
+
+svg.on("dblclick.zoom", null);
 render();

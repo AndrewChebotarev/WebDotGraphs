@@ -126,6 +126,8 @@ function drawAxes()
                 ];
                 yScale.domain(newDomain);
 
+                originalYDomain = newDomain;
+
                 drawPoints();
                 drawAxes();
                 drawGrid();
@@ -162,15 +164,20 @@ function drawAxes()
 
 function resetXScale() {
 
-    let x = originalXDomain[0] - originalXDomain[1];
-    let y = originalYDomain[0];
+    let x = 0;
+    let y = currentZoomTransform.y;
+
+    console.log(originalYDomain);
 
     const customTransform = d3.zoomIdentity.translate(x, y);
 
     console.log(customTransform);
 
     svg.transition().duration(750).call(zoom.transform, customTransform);
-    render(false);
+
+    drawPoints();
+    drawAxes();
+    drawGrid();
 }
 
 function resetYScale() {
@@ -242,6 +249,7 @@ document.getElementById("fileInput").addEventListener("change", (event) =>
 function resetZoom() 
 {
     svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity);
+    console.log(d3.zoomIdentity);
 }
 
 d3.select("#reset").on("click", () => 

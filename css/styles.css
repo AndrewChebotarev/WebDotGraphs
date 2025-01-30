@@ -1,5 +1,5 @@
 :root {
-    --main-bg-color: #4CAF50;
+    --main-bg-color: #555;
     --dark-bg-color: #333;
     --dark-bg-hover: #666;
     --light-bg-color: #ccc;
@@ -55,7 +55,7 @@ svg {
     background-color: var(--dark-svg-bg);
 }
 
-.dark-mode .button, .dark-mode .custom-file-upload {
+.dark-mode .button, .dark-mode .custom-file-upload, .button-2 {
     background-color: #555;
     color: var(--dark-text-color);
 }
@@ -86,4 +86,20 @@ svg {
 .dark-mode #tooltip {
     background: rgba(255, 255, 255, 0.8);
     color: #000;
+}
+
+.button-2{
+    background-color: var(--main-bg-color);
+    border: none;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.button-2.active {
+    transform: scale(0.95); /* Уменьшает размер кнопки при нажатии */
+    background-color: #45a049; /* Измените цвет фона, если хотите */
 }

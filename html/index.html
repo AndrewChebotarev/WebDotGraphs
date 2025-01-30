@@ -12,13 +12,23 @@
     <h1>Интерактивный график</h1>   
 
     <div>
+        <button class="button-2" id="ruler">
+            <img src="../img/ruler.png" alt="Ruler" style="width: 25px; height: 25px;"/>
+        </button>
+    
+        <button class="button-2" id="protractor">
+            <img src="../img/protractor.png" alt="Protractor" style="width: 25px; height: 25px;"/>
+        </button>
+    
+        <button class="button" id="toggleDarkMode" style="display: none;">Кнопка смены темы</button>
+        
         <label for="fileInput" class="custom-file-upload">Выберите файл</label>
-
+        
         <input type="file" id="fileInput" accept=".json" style="display: none;"/>
-
-        <button class="button" id="reset">Сброс</button>
-
-        <button class="button" id="toggleDarkMode">Кнопка смены темы</button>
+        
+        <button class="button" id="reset" style="display: none;">Сброс</button>
+        
+        <button class="button" id="toggleDarkMode" style="display: none;">Кнопка смены темы</button>
     </div>
 
     <div id="tooltip" style="position: absolute; background: rgba(255, 255, 255, 0.8); padding: 5px; border: 1px solid #000000; border-radius: 4px; pointer-events: none; display: none;">

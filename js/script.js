@@ -202,7 +202,7 @@ function drawAxes()
     const xAxis = g.append("g")
         .attr("class", "x-axis")
         .attr("transform", `translate(0,${height})`)
-        .call(d3.axisBottom(currentZoomTransform.rescaleX(xScale)))
+        .call(d3.axisBottom(xScale))
         .on("dblclick", (event) => {
             resetXScale();
     })
@@ -227,8 +227,6 @@ function drawAxes()
                 console.log("New X Domain:", newDomain);
     
                 xScale.domain(newDomain);
-
-                originalXDomain = newDomain
     
                 drawPoints();
                 drawAxes();
@@ -265,8 +263,6 @@ function drawAxes()
                     ];
         
                     yScale.domain(newDomain);
-
-                    originalYDomain = newDomain;
         
                     drawPoints();
                     drawAxes();
@@ -294,8 +290,6 @@ function drawAxes()
                     yScale.domain()[1] + (dy / height) * (yScale.domain()[1] - yScale.domain()[0])
                 ];
                 yScale.domain(newDomain);
-
-                originalYDomain = newDomain;
 
                 drawPoints();
                 drawAxes();
@@ -395,12 +389,12 @@ document.getElementById("fileInput").addEventListener("change", (event) => {
 function resetXScale() {
     let x = 0;
     let y = currentZoomTransform.y;
-
-    console.log(originalYDomain);
-
+    
     const customTransform = d3.zoomIdentity.translate(x, y);
 
     console.log(customTransform);
+
+    xScale.domain(originalXDomain);
 
     svg.transition().duration(750).call(zoom.transform, customTransform);
 
@@ -412,7 +406,9 @@ function resetXScale() {
 function resetYScale() {
     yScale.domain(originalYDomain);
     console.log("y");
-    render();
+    drawPoints();
+    drawAxes();
+    drawGrid();
 }
 
 function resetZoom() {
